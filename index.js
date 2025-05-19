@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken"
 import userRouter from "./routes/userRouter.js"
 import productRouter from "./routes/productRouter.js"
 import orderRouter from "./routes/orderRouter.js"
+import reviewRouter from "./routes/reviewRouter.js"
 import bodyParser from "body-parser"
 import cors from "cors"
 
@@ -62,3 +63,4 @@ app.listen(3000, () => {
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
 app.use("/api/orders", orderRouter);
+app.use("/api/reviews", reviewRouter);
