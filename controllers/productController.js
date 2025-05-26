@@ -21,7 +21,8 @@ export async function addProduct(req, res) {
         await newProduct.save();
         res.json({ message: "Product added successfully" })
     } catch (error) {
-        res.status(500).json({ error: "Product addition failed" })
+        console.error("Error saving product:", error);
+        res.status(500).json({ error: error.message });
     }
 
 }
@@ -31,11 +32,11 @@ export async function getProducts(req, res) {
         if (isItAdmin(req)) {
             const products = await Product.find();
             res.json(products);
-            return;
+
         } else {
-            const products = await Product.find({ availability: true });
+            const products = await Product.find({ isAvailable: true });
             res.json(products);
-            return
+
         }
     } catch (e) {
         res.status(500).json({ error: "Failed to fetch products" })

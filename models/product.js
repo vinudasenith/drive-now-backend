@@ -15,10 +15,10 @@ const productSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true
+        required: false
     },
     image: {
-        type: String,
+        type: [String],
         required: true
     },
     dailyRate: {
@@ -27,11 +27,11 @@ const productSchema = new mongoose.Schema({
     },
     availableQuantity: {
         type: Number,
-        required: true
+        required: false
     },
     location: {
         type: String,
-        required: true
+        required: false
     },
     isAvailable: {
         type: Boolean,
