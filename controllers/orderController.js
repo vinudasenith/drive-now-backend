@@ -8,84 +8,80 @@ export async function createOrder(req, res) {
         orderedItems: [],
     };
 
-    if (req.user == null) {
-        res.status(401).json({
-            message: "Please login and try again",
-        });
-        return;
+    if (!req.user) {
+        return res.status(401).json({ message: "Please login and try again" });
     }
+
     orderInfo.email = req.user.email;
 
+    // Generate order ID
     const lastOrder = await Order.find().sort({ orderDate: -1 }).limit(1);
-
-    if (lastOrder.length == 0) {
+    if (lastOrder.length === 0) {
         orderInfo.orderId = "ORD0001";
     } else {
-        const lastOrderId = lastOrder[0].orderId;
-        const lastOrderNumberInString = lastOrderId.replace("ORD", "");
-        const lastOrderNumber = parseInt(lastOrderNumberInString);
+        const lastOrderNumber = parseInt(lastOrder[0].orderId.replace("ORD", ""));
         const currentOrderNumber = lastOrderNumber + 1;
-        const formattedNumber = String(currentOrderNumber).padStart(4, "0");
-        orderInfo.orderId = "ORD" + formattedNumber;
+        orderInfo.orderId = "ORD" + String(currentOrderNumber).padStart(4, "0");
     }
+
     let oneDayCost = 0;
+
     for (let i = 0; i < data.orderedItems.length; i++) {
         try {
-            const product = await Product.findOne({ key: data.orderedItems[i].key });
-            if (product == null) {
-                res.status(404).json({
-                    message:
-                        "Product with key " + data.orderedItems[i].key + " not found",
+            const item = data.orderedItems[i];
+            const product = await Product.findOne({ key: item.key });
+
+            if (!product) {
+                return res.status(404).json({
+                    message: `Product with key ${item.key} not found`,
                 });
-                return;
             }
-            if (product.availability == false) {
-                res.status(400).json({
-                    message:
-                        "Product with key " +
-                        data.orderedItems[i].key +
-                        " is not available",
+
+            if (!product.isAvailable) {
+                return res.status(400).json({
+                    message: `Product with key ${item.key} is not available`,
                 });
-                return;
             }
+
+            const quantity = Number(item.qty) || 1;
+            const unitCost = product.dailyRate;
+
             orderInfo.orderedItems.push({
                 product: {
                     key: product.key,
-                    name: product.name,
+                    name: product.model, // using 'model' as name
                     image: product.image[0],
-                    price: product.price,
+                    price: unitCost // using 'dailyRate' as price
                 },
-                quantity: data.orderedItems[i].qty,
+                quantity
             });
 
-            oneDayCost += product.price * data.orderedItems[i].qty;
-        } catch (e) {
-            res.status(500).json({
-                message: "Failed to create order",
-            });
-            return;
+            oneDayCost += unitCost * quantity;
+
+        } catch (error) {
+            console.error("Error fetching product:", error);
+            return res.status(500).json({ message: "Failed to fetch product info" });
         }
     }
 
-    orderInfo.days = data.days;
-    orderInfo.startingDate = data.startingDate;
-    orderInfo.endingDate = data.endingDate;
-    orderInfo.totalAmount = oneDayCost * data.days;
+    orderInfo.days = Number(data.days);
+    orderInfo.startingDate = new Date(data.startingDate);
+    orderInfo.endingDate = new Date(data.endingDate);
+    orderInfo.totalAmount = oneDayCost * orderInfo.days;
+
     try {
         const newOrder = new Order(orderInfo);
         const result = await newOrder.save();
-        res.json({
+        res.status(201).json({
+            success: true,
             message: "Order created successfully",
             order: result,
         });
     } catch (e) {
-        console.log(e);
-        res.status(500).json({
-            message: "Failed to create order",
-        });
+        console.error("Error saving order:", e);
+        res.status(500).json({ message: "Failed to create order" });
     }
 }
-
 
 
 

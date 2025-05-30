@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
     orderId: {
@@ -26,6 +26,16 @@ const orderSchema = new mongoose.Schema({
             quantity: { type: Number, required: true }
         }
     ],
+    totalAmount: {
+        type: Number,
+        required: true,
+        validate: {
+            validator: function (v) {
+                return !isNaN(v);
+            },
+            message: 'totalAmount must be a valid number.'
+        }
+    },
     days: {
         type: Number,
         required: true
@@ -47,13 +57,9 @@ const orderSchema = new mongoose.Schema({
         type: String,
         default: "Pending",
         required: true
-    },
-    totalAmount: {
-        type: Number,
-        required: true
     }
 });
 
 const Order = mongoose.model("Order", orderSchema);
 
-export default Order
+export default Order;
