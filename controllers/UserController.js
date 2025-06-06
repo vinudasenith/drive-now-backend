@@ -100,23 +100,27 @@ export async function getAllUsers(req, res) {
     }
 }
 
+
+
 export async function blockOrUnblockUser(req, res) {
     const email = req.params.email;
     if (isItAdmin(req)) {
         try {
             const user = await User.findOne({ email: email });
-
-            if (user == null) {
-                res.status(404).json({ error: "User not found" });
-                return;
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
             }
 
-            const isBlocked = !user.isBlocked;
+            const newStatus = !user.isBlocked;
+            user.isBlocked = newStatus;
+            await user.save();
 
-            await User.updateOne({ email: email }, { isBlocked: isBlocked });
-            res.json({ message: "User blocked/unblocked successfully" });
+            res.json({
+                message: `User ${newStatus ? 'blocked' : 'unblocked'} successfully`,
+                updatedUser: user
+            });
         } catch (e) {
-            res.status(500).json({ error: "Failed to block/unblock user" });
+            res.status(500).json({ error: "Failed to update user status" });
         }
     } else {
         res.status(403).json({ error: "Unauthorized" });
