@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken"
-import User from '../models/user.js';
+import jwt from "jsonwebtoken";
+import User from "../models/user.js";
+
 
 
 export function registerUser(req, res) {
@@ -62,5 +63,67 @@ export function loginUser(req, res) {
         }
 
     )
+}
+
+export function isItAdmin(req) {
+    let isAdmin = false;
+
+    if (req.user != null) {
+        if (req.user.role == "admin") {
+            isAdmin = true;
+        }
+    }
+    return isAdmin;
+}
+
+export function isItCustomer(req) {
+    let isCustomer = false;
+
+    if (req.user != null) {
+        if (req.user.role == "customer") {
+            isCustomer = true;
+        }
+    }
+    return isCustomer;
+}
+
+export async function getAllUsers(req, res) {
+    if (isItAdmin(req)) {
+        try {
+            const users = await User.find();
+            res.json(users);
+        } catch (e) {
+            res.status(500).json({ error: "Failed to get users" })
+        }
+    } else {
+        res.status(403).json({ error: "Unauthorized" })
+    }
+}
+
+
+
+export async function blockOrUnblockUser(req, res) {
+    const email = req.params.email;
+    if (isItAdmin(req)) {
+        try {
+            const user = await User.findOne({ email: email });
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
+            }
+
+            const newStatus = !user.isBlocked;
+            user.isBlocked = newStatus;
+            await user.save();
+
+            res.json({
+                message: `User ${newStatus ? 'blocked' : 'unblocked'} successfully`,
+                updatedUser: user
+            });
+        } catch (e) {
+            res.status(500).json({ error: "Failed to update user status" });
+        }
+    } else {
+        res.status(403).json({ error: "Unauthorized" });
+    }
 }
 
