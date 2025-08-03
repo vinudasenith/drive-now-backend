@@ -36,6 +36,10 @@ const userSchema = new mongoose.Schema({
         required: false,
         default: "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-media-1677509740"
 
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false
     }
 });
 
