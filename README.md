@@ -45,27 +45,12 @@ Drive-Now is a full-stack car rental service built using the MERN stack. This re
    npm install
    ```
 
-3. **Configure Environment Variables**
-   Create a `.env` file in the root directory and add the following:
-   ```env
-   PORT=3000
-   MONGO_URI=mongodb://localhost:27017/drive-now
-   JWT_SECRET=your_jwt_secret_key
-   ```
-   - Replace `mongodb://localhost:27017/drive-now` with your MongoDB connection string.
-   - Replace `your_jwt_secret_key` with a secure secret key for JWT.
-
-4. **Run the Application**
+3. **Run the Application**
    ```bash
    npm start
    ```
    The server will start at `http://localhost:3000`.
 
-5. **Run in Development Mode**
-   ```bash
-   npm run dev
-   ```
-   Uses `nodemon` for auto-restarting the server during development.
 
 ## 🗂️ Project Structure
 ```
@@ -87,19 +72,18 @@ drive-now-backend/
 
 ## API Endpoints
 ### 🌐 Public Routes
-- `POST /api/auth/register`: Register a new user.
-- `POST /api/auth/login`: Authenticate a user and return a JWT.
-- `GET /api/vehicles`: Get a list of available vehicles.
+- `POST /api/users`: Register a new user.
+- `POST /api/users/login`: Authenticate a user and return a JWT.
 - `POST /api/bookings`: Create a new booking.
 
 ### 🔒 Admin Routes (Protected)
-- `GET /api/users`: Get a list of all users.
-- `PUT /api/users/:id/block`: Block/unblock a user.
-- `POST /api/vehicles`: Add a new vehicle.
-- `PUT /api/vehicles/:id`: Update a vehicle.
-- `DELETE /api/vehicles/:id`: Delete a vehicle.
-- `PUT /api/orders/:id/confirm`: Confirm a booking.
-- `PUT /api/orders/:id/cancel`: Cancel a booking.
+- `GET /api/users/all`: Get a list of all users.
+- `PUT /api/users/block/:email`: Block/unblock a user.
+- `POST /api/products`: Add a new vehicle.
+- `PUT /api/products/:key`: Update a vehicle.
+- `DELETE /api/products/:key`: Delete a vehicle.
+- `PUT /api/orders/status/:orderId`: Confirm or Cancel a booking.
+
 
 ## 🛡️ Authentication
 - All protected routes require a JWT token in the `Authorization` header as `Bearer <token>`.
