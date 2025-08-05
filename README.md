@@ -36,7 +36,7 @@ Drive-Now is a full-stack car rental service built using the MERN stack. This re
 ## ⚙️ Setup Instructions
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/yourusername/drive-now-backend.git
+   git clone https://github.com/vinudasenith/drive-now-backend.git
    cd drive-now-backend
    ```
 
