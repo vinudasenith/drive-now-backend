@@ -1,5 +1,6 @@
 import Review from '../models/review.js';
 
+// add review
 export async function addReview(req, res) {
     if (!req.user) {
         return res.status(401).json({ message: "Please login and try again" });
@@ -23,7 +24,7 @@ export async function addReview(req, res) {
 }
 
 
-
+// get reviews
 export function getReviews(req, res) {
     const user = req.user
     if (user == null || user.role != "admin") {
@@ -43,6 +44,7 @@ export function getReviews(req, res) {
     }
 }
 
+// delete review
 export function deleteReviews(req, res) {
     const email = req.params.email;
 
@@ -83,7 +85,7 @@ export function deleteReviews(req, res) {
 
 }
 
-
+// approve review
 export function approveReview(req, res) {
     const email = req.params.email;
 

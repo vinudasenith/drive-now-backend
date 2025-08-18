@@ -2,6 +2,8 @@ import Order from "../models/order.js";
 import Product from "../models/product.js";
 import { isItAdmin, isItCustomer } from "./userController.js";
 
+
+// create order
 export async function createOrder(req, res) {
     const data = req.body;
     const orderInfo = {
@@ -84,7 +86,7 @@ export async function createOrder(req, res) {
 }
 
 
-
+// get quote
 export async function getQuote(req, res) {
     try {
         const { orderedItems, startingDate, endingDate } = req.body;
@@ -231,6 +233,9 @@ export async function getQuote(req, res) {
         });
     }
 }
+
+
+// get orders
 export async function getOrders(req, res) {
 
     if (isItCustomer(req)) {
@@ -251,6 +256,8 @@ export async function getOrders(req, res) {
         res.status(403).json({ error: "Unauthorized" });
     }
 }
+
+// approve or reject order
 export async function approveOrRejectOrder(req, res) {
     const orderId = req.params.orderId;
     const status = req.body.status;

@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 
+// register user
 export function registerUser(req, res) {
 
     const data = req.body;
@@ -22,6 +23,7 @@ export function registerUser(req, res) {
 
 }
 
+// login user
 export function loginUser(req, res) {
     const data = req.body;
 
@@ -63,6 +65,7 @@ export function loginUser(req, res) {
     )
 }
 
+// check if user is admin
 export function isItAdmin(req) {
     let isAdmin = false;
 
@@ -74,6 +77,7 @@ export function isItAdmin(req) {
     return isAdmin;
 }
 
+// check if user is customer
 export function isItCustomer(req) {
     let isCustomer = false;
 
@@ -85,6 +89,7 @@ export function isItCustomer(req) {
     return isCustomer;
 }
 
+// get all users
 export async function getAllUsers(req, res) {
     if (isItAdmin(req)) {
         try {
@@ -98,8 +103,7 @@ export async function getAllUsers(req, res) {
     }
 }
 
-
-
+// block or unblock user
 export async function blockOrUnblockUser(req, res) {
     const email = req.params.email;
     if (isItAdmin(req)) {

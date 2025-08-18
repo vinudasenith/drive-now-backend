@@ -15,6 +15,7 @@ const app = express()
 app.use(cors());
 app.use(bodyParser.json());
 
+//jwt middleware for verifying token
 app.use((req, res, next) => {
     let token = req.header
         ("Authorization");
@@ -40,6 +41,8 @@ app.use((req, res, next) => {
 
 });
 
+
+//connect to mongodb
 let mongoUrl = process.env.MONGO_URL
 mongoose.connect(mongoUrl)
 
@@ -54,12 +57,7 @@ app.listen(3000, () => {
 
 
 
-
-
-
-
-
-
+//mount api routers for different resources
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
 app.use("/api/orders", orderRouter);
